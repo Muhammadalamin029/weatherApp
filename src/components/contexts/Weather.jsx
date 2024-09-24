@@ -8,7 +8,7 @@ const Weather = () => {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const getWeatherRef = useRef("");
-  const { setWeather } = useContext(WeatherContext);
+  const { setWeather, setWeatherForecast } = useContext(WeatherContext);
 
   const handleInputValue = (event) => {
     setInputValue(event.target.value);
@@ -18,6 +18,7 @@ const Weather = () => {
     const getWeather = (getWeatherRef.current = inputValue);
     const apiKey = "148e1c6d60fb5df73f308cc886d4fe6c";
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${getWeather}&appid=${apiKey}`;
+    const url1 = `https://api.openweathermap.org/data/2.5/forecast?q=${getWeather}&appid=${apiKey}`;
 
     if (inputValue !== "") {
       try {
@@ -25,9 +26,14 @@ const Weather = () => {
         img.style.display = "block";
         setIsLoading(true);
         const res = await fetch(url);
+        const res1 = await fetch(url1);
         const data = await res.json();
+        const data1 = await res1.json();
         setInputValue("");
+        console.log(data1.list);
+
         if (data.cod === 200) {
+          setWeatherForecast(data1.list);
           setWeather({
             temperature: Math.round(data.main.temp - 273.15) + "°C",
             location: data.name,
